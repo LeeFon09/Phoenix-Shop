@@ -1,0 +1,5 @@
+{
+    "require": {
+        "hightman/xunsearch": "^1.4"
+    }
+}

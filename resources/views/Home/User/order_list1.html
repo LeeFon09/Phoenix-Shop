@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>订单详情</title>
+</head>
+
+<body>
+<ul>
+    <li><a href="{:U('Home/User/order_list')}">全部</a></li>
+    <li><a href="{:U('Home/User/order_list',array('field'=>'order_status','value'=>1))}">已完成</a></li>
+    <li><a href="{:U('Home/User/order_list',array('field'=>'pay_status','value'=>1))}">已支付</a></li>
+    <li><a href="{:U('Home/User/order_list',array('field'=>'pay_status','value'=>0))}">未支付</a></li>
+
+</ul>
+<table width="980" border="1">
+    <tbody>
+    <volist name="lists" id="list">
+        <tr>
+            <th scope="col">订单号</th>
+            <th scope="col">
+                <div align="left">
+                    {$list.order_sn}
+                </div>
+            </th>
+        </tr>
+        <tr>
+            <td height="83">
+                <div align="center">下单时间</div>
+            </td>
+            <td>
+                {$list.add_time|date='Y-m-d H:i:s',###}
+            </td>
+        </tr>
+        <tr>
+            <td height="87">订单商品</td>
+            <td>
+                <volist name="list.goods_list" id="good">
+                    {$good.goods_name}----{$good.goods_number} <br>
+                </volist>
+            </td>
+        </tr>
+        <tr>
+            <td height="87">收货人</td>
+            <td>
+                {$list.consignee}
+            </td>
+        </tr>
+        <tr>
+            <td height="87">订单总额</td>
+            <td>
+                {$list.total_fee}
+            </td>
+        </tr>
+        <tr>
+            <td height="87">订单状态</td>
+            <td>
+                {$order_status[$list['order_status']]}
+                /{$pay_status[$list['pay_status']]}
+                /{$shipping_status[$list['shipping_status']]}
+                <if condition="($list['pay_status'] eq '0') AND ($list['is_cod'] eq '0') AND ($list['order_status'] neq '3')">
+                    <a href="{:U('Home/User/order_pay',array('id'=>$list['order_id']))}">立即支付</a>
+                    <a href="{:U('Home/User/order_cancel',array('id'=>$list['order_id']))}">取消订单</a>
+                </if>
+                <if condition="($list['shipping_status'] eq '1') ">
+                    <a href="{:U('Home/User/order_confirm',array('id'=>$list['order_id']))}">确认收货</a>
+                </if>
+            </td>
+        </tr>
+        <tr>
+            <td height="87"></td>
+            <td>
+                <a href="{:U('Home/User/order_detail',array('id'=>$list['order_id']))}">订单详情</a>
+            </td>
+        </tr>
+    </volist>
+
+    </tbody>
+</table>
+<p>&nbsp;</p>
+</body>
+</html>

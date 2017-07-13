@@ -1,0 +1,203 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>个人信息</title>
+    <script src="/Public/js/jquery-1.8.2.min.js"></script>
+    <link rel="stylesheet" href="/Public/css/jquery.datetimepicker.css">
+    <script src="/Public/js/jquery.datetimepicker.js"></script>
+
+</head>
+
+<body>
+<form action="" method="post">
+    <table width="100%" border="1">
+        <tbody>
+        <tr>
+            <th scope="col">
+                <div align="center">账号</div>
+            </th>
+            <th scope="col">
+                <div align="center">
+                    {$user.username}
+                </div>
+            </th>
+        </tr>
+
+        <tr>
+            <td>
+                <div align="center">性别</div>
+            </td>
+            <td>
+                <div align="center">
+                   <input name="sex" id="sex_0" <if condition="$user['sex'] eq '0'">checked</if>  type="radio" value="0"> <label for="sex_0">保密</label>
+                    <input name="sex" id="sex_1" <if condition="$user['sex'] eq '1'">checked</if>  type="radio" value="1"> <label for="sex_1">男</label>
+                    <input name="sex"  id="sex_2" <if condition="$user['sex'] eq '2'">checked</if>  type="radio" value="2"> <label for="sex_2">女</label>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div align="center">邮箱</div>
+            </td>
+            <td>
+                <div align="center">
+                    {$user.email}
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div align="center">生日</div>
+            </td>
+            <td>
+                <div align="center">
+                    <input type="text" id="datetime" name="birthday" value="{$user.birthday|date="y-m-d",###}">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div align="center">所在地区</div>
+            </td>
+            <td>
+                <div align="center">
+                    <select name="province" id="province" onChange="get_city(this)" >
+                        <option value="0">请选择省份</option>
+                        <volist name="province" id="p">
+                            <option <if condition="$user['province'] eq $p['id']">selected</if> value="{$p.id}">{$p.name}</option>
+                        </volist>
+                    </select>
+                    <select name="city" id="city" onChange="get_area(this)">
+                        <option value="0">请选择城市</option>
+                        <volist name="city" id="p">
+                            <option <if condition="$user['city'] eq $p['id']">selected</if> value="{$p.id}">{$p.name}</option>
+                        </volist>
+                    </select>
+                    <select name="district" id="district">
+                        <option value="0">请选择地区</option>
+                        <volist name="area" id="p">
+                            <option <if condition="$user['district'] eq $p['id']">selected</if> value="{$p.id}">{$p.name}</option>
+                        </volist>
+                    </select>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div align="center">QQ</div>
+            </td>
+            <td>
+                <div align="center">
+                    <input type="text" name="qq" value="{$user.qq}">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div align="center">手机</div>
+            </td>
+            <td>
+                <div align="center">
+                    {$user.mobile}
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div align="center">等级</div>
+            </td>
+            <td>
+                <div align="center">
+                    {$user.rank_name}
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div align="center">余额</div>
+            </td>
+            <td>
+                <div align="center">
+                    {$user.user_money}
+
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div align="center">头像</div>
+            </td>
+            <td>
+                <div align="center" id="img_box">
+                    <img width="150" height="150" src="{$user.head_pic}" id="preview" alt="">
+                    <input type="hidden" name="head_pic" id="head_pic">
+                    <button type="button" onClick="GetUploadify2(1,'head_pic','head_pic','add_img')">上传图片</button>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div align="center">操作</div>
+            </td>
+            <td>
+                <div align="center">
+                    <input type="submit" value="保存">
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</form>
+
+<script src="__PUBLIC__/js/global.js"></script>
+<script src="__PUBLIC__/js/pc_common.js"></script>
+
+<script>
+    var myDate = new Date();
+    var year = myDate.getFullYear();
+    $('#datetime').datetimepicker({
+        onGenerate:function( ct ){
+            $(this).find('.xdsoft_date').toggleClass('xdsoft_disabled');
+        },
+       // timepicker:true,
+//        datepicker:true,
+//        yearEnd:year,
+//        lang:'ch'
+        minDate:'-1970/01/2',
+        maxDate:'+1970/01/2',
+        timepicker:false,
+        yearEnd:year,
+    });
+
+    function delimg(file,t){
+        $.get(
+                "/index.php?m=Admin&c=Uploadify&a=delupload",{action:"del", filename:file},function(){}
+        );
+        $('#head_pic').val('');
+        $('#preview').attr('src','');
+        $(t).remove();
+    }
+    function add_img(str){
+        var head_pic = $('#head_pic').val();
+        $('#head_pic').val(str);
+        $('#preview').attr('src',str);
+
+//        if(!$('#delimg')){
+//            $('#img_box').append('<button id="delimg" type="button" onclick="delimg('+"'"+str+"'"+',this)">删除图片</button>');
+//        }else{
+//            $('#delimg').attr('onclick','delimg('+"'"+str+"'"+',this)');
+//        }
+        if(!head_pic){
+            $('#img_box').append('<button id="delimg" type="button" onclick="delimg('+"'"+str+"'"+',this)">删除图片</button>');
+        }else{
+            $('#delimg').attr('onclick','delimg('+"'"+str+"'"+',this)');
+        }
+
+    }
+</script>
+<script src="__PUBLIC__/js/global.js"></script>
+<script src="__PUBLIC__/js/pc_common.js"></script>
+
+</body>
+</html>

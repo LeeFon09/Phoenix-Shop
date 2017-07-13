@@ -1,0 +1,8 @@
+/.idea
+.env
+.env.example
+/public/Public/upload/*
+/public/upload/*
+
+/storage/framework/sessions/*
+/storage/framework/views/*

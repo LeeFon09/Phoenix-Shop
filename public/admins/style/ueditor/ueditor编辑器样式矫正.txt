@@ -1,0 +1,6 @@
+<style>
+    .edui-default{line-height: 28px;}
+    div.edui-combox-body,div.edui-button-body,div.edui-splitbutton-body
+    {overflow: hidden; height:20px;}
+    div.edui-box{overflow: hidden; height:22px;}
+</style>
